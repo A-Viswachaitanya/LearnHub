@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'; // Added hooks
-import { Loader2, AlertTriangle, Star, RefreshCw } from 'lucide-react'; // Added RefreshCw
+import React from 'react';
+import { Loader2, AlertTriangle, Star } from 'lucide-react';
+import ReCAPTCHA from "react-google-recaptcha";
 
 export const Button = ({ children, onClick, variant = 'primary', className = '', type = 'button', disabled = false, loading = false }) => {
   const baseStyles = "px-4 py-2 rounded-md font-medium transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
@@ -29,6 +30,7 @@ export const Input = ({ label, type = 'text', value, onChange, placeholder, requ
   </div>
 );
 
+// UPDATED: Changed border-gray-100 to border-gray-200 for better visibility
 export const Card = ({ children, className = '' }) => (
   <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden ${className}`}>{children}</div>
 );
@@ -88,64 +90,18 @@ export const SimpleBarChart = ({ data, total }) => {
   );
 };
 
-// NEW: Custom Captcha Component
+// NEW: Google ReCAPTCHA Component
 export const Captcha = ({ onVerify }) => {
-  const [code, setCode] = useState('');
-  const [input, setInput] = useState('');
-
-  // Generate random 6-character code
-  const generateCode = () => {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // No confusing I, 1, O, 0
-    let result = '';
-    for (let i = 0; i < 6; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setCode(result);
-    setInput('');
-    onVerify(false); // Reset parent valid state
-  };
-
-  useEffect(() => {
-    generateCode();
-  }, []);
-
-  const handleChange = (e) => {
-    const val = e.target.value.toUpperCase();
-    setInput(val);
-    if (val === code) {
-      onVerify(true);
-    } else {
-      onVerify(false);
-    }
+  const onChange = (token) => {
+    // If token exists, user passed the check
+    onVerify(!!token); 
   };
 
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Captcha *</label>
-      <div className="flex items-center gap-3 mb-2">
-        <div 
-          className="flex-1 bg-gray-200 dark:bg-gray-700 select-none px-4 py-3 rounded-md font-mono text-xl font-bold tracking-[0.2em] text-center text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 relative overflow-hidden"
-        >
-          {/* Noise overlay simulation */}
-          <div className="absolute inset-0 opacity-10 pointer-events-none" 
-               style={{ backgroundImage: 'linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000)', backgroundSize: '10px 10px', backgroundPosition: '0 0, 5px 5px' }}></div>
-          {code}
-        </div>
-        <button 
-          type="button" 
-          onClick={generateCode} 
-          className="p-3 text-gray-500 hover:text-blue-600 bg-gray-100 dark:bg-gray-700 rounded-md border border-gray-200 dark:border-gray-600 transition-colors"
-          title="Refresh Code"
-        >
-          <RefreshCw size={20} />
-        </button>
-      </div>
-      <input
-        type="text"
-        value={input}
-        onChange={handleChange}
-        placeholder="Enter the code shown above"
-        className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-700 border-gray-300 uppercase"
+    <div className="mb-4 flex justify-center">
+      <ReCAPTCHA
+        sitekey="6LcXYBwsAAAAANP42YNBzfqzdMKc7kPaj8vNJwIX"
+        onChange={onChange}
       />
     </div>
   );

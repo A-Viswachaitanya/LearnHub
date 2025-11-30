@@ -1,11 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/Contexts';
-import { Card, Input, Button, Captcha } from '../components/UI'; // Added Captcha import
+import { AuthContext } from '../context/Contexts.jsx';
+import { Card, Input, Button, Captcha } from '../components/UI.jsx';
 
 export const Login = ({ onNavigate }) => {
   const { login } = useContext(AuthContext);
   const [data, setData] = useState({ email: '', password: '' });
-  const [captchaValid, setCaptchaValid] = useState(false); // Captcha state
+  const [captchaValid, setCaptchaValid] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -14,14 +14,18 @@ export const Login = ({ onNavigate }) => {
     setFormError('');
 
     if (!captchaValid) {
-      setFormError('Please complete the captcha correctly.');
+      setFormError('Please verify you are human.');
       return;
     }
 
     setLoading(true); 
-    const success = await login(data.email, data.password);
-    if (success) {
-      onNavigate('dashboard');
+    try {
+      const success = await login(data.email, data.password);
+      if (success) {
+        onNavigate('dashboard');
+      }
+    } catch (err) {
+      // Login error handled by context/toast, but we stop loading
     }
     setLoading(false); 
   };
@@ -51,11 +55,10 @@ export const Login = ({ onNavigate }) => {
             required 
           />
           
-          {/* CAPTCHA Component */}
           <Captcha onVerify={setCaptchaValid} />
 
           {formError && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md">
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-md text-center">
               {formError}
             </div>
           )}
@@ -80,7 +83,7 @@ export const Login = ({ onNavigate }) => {
 export const Register = ({ onNavigate }) => {
   const { register } = useContext(AuthContext);
   const [data, setData] = useState({ name: '', email: '', password: '', role: 'student' });
-  const [captchaValid, setCaptchaValid] = useState(false); // Captcha state
+  const [captchaValid, setCaptchaValid] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -104,7 +107,7 @@ export const Register = ({ onNavigate }) => {
     
     if (!validate()) return;
     if (!captchaValid) {
-      setErrors(prev => ({ ...prev, general: 'Please complete the captcha' }));
+      setErrors(prev => ({ ...prev, general: 'Please verify you are human.' }));
       return;
     }
 
@@ -152,7 +155,6 @@ export const Register = ({ onNavigate }) => {
             <button type="button" onClick={() => setData({...data, role: 'admin'})} className={`p-2 border rounded ${data.role === 'admin' ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30' : 'border-gray-200 dark:border-gray-700'} dark:text-white transition-colors`}>Educator</button>
           </div>
           
-          {/* CAPTCHA Component */}
           <Captcha onVerify={setCaptchaValid} />
           
           {errors.general && <p className="text-red-500 text-sm mb-4 text-center">{errors.general}</p>}

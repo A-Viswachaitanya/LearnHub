@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Plus, Trash2, Edit, ClipboardList, PenTool, ArrowLeft, Loader2, FileText, UploadCloud, BarChart2, MessageSquare, Download } from 'lucide-react';
-import { api } from '../services/api.js';
-import { AuthContext, ToastContext } from '../context/Contexts.jsx';
-import { Button, Input, Card, Badge, ConfirmModal, SimpleBarChart } from '../components/UI.jsx';
+import { Plus, Trash2, Edit, ClipboardList, PenTool, ArrowLeft, Loader2, FileText, UploadCloud, BarChart2, MessageSquare, Download, Save } from 'lucide-react';
+import { api } from '../services/api';
+import { AuthContext, ToastContext } from '../context/Contexts';
+import { Button, Input, Card, Badge, ConfirmModal, SimpleBarChart } from '../components/UI';
 
 export const AdminStudents = ({ onNavigate }) => {
   const [students, setStudents] = useState([]);
   useEffect(() => { api.getAllUsers().then(users => setStudents(users.filter(u => u.role === 'student'))); }, []);
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* UPDATED: Added Back Button */}
       <Button variant="ghost" onClick={() => onNavigate('dashboard')} className="mb-4 pl-0">
         <ArrowLeft size={16} /> Back to Dashboard
       </Button>
@@ -82,7 +81,6 @@ export const AdminCourses = ({ onNavigate }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* UPDATED: Added Back Button */}
       <Button variant="ghost" onClick={() => onNavigate('dashboard')} className="mb-4 pl-0">
         <ArrowLeft size={16} /> Back to Dashboard
       </Button>
@@ -434,7 +432,7 @@ export const AdminSubmissions = ({ courseId, onNavigate }) => {
                  </div>
 
                  <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded mb-4 border dark:border-gray-700">
-                   {/* ADDED: Check if content is Base64 PDF and show download link */}
+                   {/* Check if content is Base64 PDF and show download link */}
                    {sub.content && sub.content.startsWith('data:application/pdf') ? (
                      <a href={sub.content} download={`submission-${sub.student?.name}.pdf`} className="flex items-center gap-2 text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
                        <Download size={18} /> Download Submission PDF
@@ -456,7 +454,9 @@ export const AdminSubmissions = ({ courseId, onNavigate }) => {
                      </div>
                      <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
                        {isEditing && <Button variant="ghost" onClick={() => setEditingGradeId(null)}>Cancel</Button>}
-                       <Button onClick={() => saveGrade(sub.id)} className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto"><Save size={16} /> Save</Button>
+                       <Button onClick={() => saveGrade(sub.id)} className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto">
+                         <Save size={16} className="mr-1"/> Save
+                       </Button>
                      </div>
                    </div>
                  )}
