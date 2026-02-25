@@ -27,7 +27,7 @@ const INITIAL_DATA = {
       category: 'Development', 
       instructorId: 'u1',
       content: [
-        { id: 'l1', title: 'Welcome & Setup', type: 'video', duration: '10:00', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }, 
+        { id: 'l1', title: 'Welcome & Setup', type: 'video', duration: '10:00', url: 'https://www.youtube.com/embed/s2skans2dP4' }, 
         { id: 'l2', title: 'Understanding Hooks', type: 'text', body: 'Hooks let you use state and other React features without writing a class...' },
         { id: 'a1', title: 'Build a Custom Hook', type: 'assignment', description: 'Create a useFetch hook that handles loading and errors. Submit the GitHub Gist link.' }
       ]
